@@ -3,11 +3,9 @@ import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
-logging.TOKEN = "8865477160:AAHxLidy6fkQKYK3bzcz_aMKVVYVworiJWQ"
+logging.basicConfig(level=logging.INFO)
 
-TOKEN = os.environ.get("TOKEN")
-if not TOKEN:
-    raise ValueError("A TOKEN környezeti változó hiányzik!")
+TOKEN = "8865477160:AAHxLidy6fkQKYK3bzcz_aMKVVYVworiJWQ"
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
