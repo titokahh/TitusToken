@@ -3,7 +3,7 @@ from aiohttp import web
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
-TOKEN = TOKEN = os.environ.get("TOKEN")
+TOKEN = os.environ.get("TOKEN")
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
