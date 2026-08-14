@@ -75,7 +75,6 @@ async def cmd_stats(message: types.Message):
     )
     await message.answer(stats_text, parse_mode="Markdown")
 
-# Gombkezelő (Callback handler)
 @dp.callback_query()
 async def callback_listener(callback: types.CallbackQuery):
     user_id = callback.from_user.id
@@ -90,7 +89,7 @@ async def callback_listener(callback: types.CallbackQuery):
 
     elif data == "mining":
         await callback.answer()
-        await callback.message.answer("⛏️ **Bányászat menü:** Nézz meg 5 hirdetést a Mini Appban, indítsd el az Autobotot, és az 24 órán át termeli neked a tokeneket!")
+        await callback.message.answer("⛏️ **Bányászat menü:** Nyisd meg a Mini Appot a hirdetéshez, nézd meg, majd kattints a jóváírásra!")
 
     elif data == "autobot":
         await callback.answer()
@@ -112,7 +111,8 @@ async def callback_listener(callback: types.CallbackQuery):
             if user_info["autobot_active"] and user_info["autobot_end_time"] and now >= user_info["autobot_end_time"]:
                 user_info["autobot_active"] = False
 
-            web_app_url = "https://sajt-token-bot-production.up.railway.app"
+            # Átadjuk a user_id-t a Web App URL-nek, hogy a hirdetés tudja, kinek jár a jutalom
+            web_app_url = f"https://sajt-token-bot-production.up.railway.app/?user_id={user_id}"
             builder = InlineKeyboardBuilder()
             builder.row(types.InlineKeyboardButton(text="📺 Hirdetés megtekintése (Mini App)", web_app=types.WebAppInfo(url=web_app_url)))
             builder.row(types.InlineKeyboardButton(text="✅ Hirdetés teljesítve (Jóváírás)", callback_data="watch_one_ad"))
@@ -219,14 +219,101 @@ async def handle_reward(request: web.Request):
     
     return web.json_response({"status": "success", "reward": 0.02})
 
+# A Mini App HTML oldala a beágyazott Adsgram scripttel (42866 blokk)
+async def index(request):
+    user_id = request.query.get("user_id", "")
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="hu">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sajt Token - Adsgram</title>
+        <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+        <style>
+            body {{
+                background-color: #1a1a1a;
+                color: #ffffff;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                text-align: center;
+                padding-top: 40px;
+                margin: 0;
+            }}
+            .container {{
+                padding: 20px;
+            }}
+            h1 {{
+                color: #ffaa00;
+                font-size: 24px;
+            }}
+            button {{
+                background-color: #ffaa00;
+                color: #1a1a1a;
+                border: none;
+                padding: 15px 30px;
+                font-size: 16px;
+                font-weight: bold;
+                border-radius: 12px;
+                cursor: pointer;
+                margin-top: 20px;
+                box-shadow: 0 4px 10px rgba(255, 170, 0, 0.3);
+            }}
+            button:active {{
+                transform: scale(0.98);
+            }}
+            #status {{
+                margin-top: 25px;
+                font-size: 14px;
+                color: #aaaaaa;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🧀 Sajt Token Bányászat</h1>
+            <p>Kattints a gombra a hirdetés megtekintéséhez!</p>
+            <button onclick="triggerAd()">📺 Hirdetés Indítása</button>
+            <div id="status"></div>
+        </div>
+
+        <script>
+            const userId = "{user_id}";
+            // Adsgram inicializálása a 42866-os blokk azonosítóval
+            const adController = window.Adsgram.init({{ blockId: "42866" }});
+
+            async function triggerAd() {{
+                const statusEl = document.getElementById("status");
+                statusEl.innerText = "Hirdetés betöltése...";
+                try {{
+                    const result = await adController.show();
+                    statusEl.innerText = "Hirdetés sikeresen lefutott! Jutalom jóváírása...";
+                    
+                    if (userId) {{
+                        fetch(`/reward?user_id=${{userId}}`)
+                            .then(res => res.json())
+                            .then(data => {{
+                                statusEl.innerText = "✅ Sikeres jutalom! Bezárhatod ezt az ablakot.";
+                            }})
+                            .catch(err => {{
+                                statusEl.innerText = "Hiba a jutalom mentésekor.";
+                            }});
+                    }} else {{
+                        statusEl.innerText = "✅ Sikeres hirdetés!";
+                    }}
+                }} catch (e) {{
+                    statusEl.innerText = "A hirdetés bezárult vagy nem elérhető.";
+                }}
+            }}
+        </script>
+    </body>
+    </html>
+    """
+    return web.Response(text=html_content, content_type="text/html")
+
 async def web_server():
     app = web.Application()
     app.router.add_get("/reward", handle_reward)
-    
-    async def index(request):
-        return web.Response(text="Sajt Token Bot Backend Fut (Adsgram Aktív).")
     app.router.add_get("/", index)
-    
     return app
 
 if __name__ == "__main__":
