@@ -3,13 +3,11 @@ from aiohttp import web
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
-# Telegram Bot Token a BotFather-től
 TOKEN = "8865477160:AAEP19lvfc8g_Ztr9YeXp2gR04CVr0-nihI"
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
-# Felhasználói egyenlegek tárolása memóriában
 user_balances = {}
 
 @dp.message(Command("start"))
@@ -18,7 +16,6 @@ async def cmd_start(message: types.Message):
     if user_id not in user_balances:
         user_balances[user_id] = 0
     
-    # A Railway szerveren futó webapp linkje
     web_app_url = "https://sajt-token-bot-production.up.railway.app"
     keyboard = types.InlineKeyboardMarkup(
         inline_keyboard=[
@@ -35,7 +32,6 @@ async def cmd_start(message: types.Message):
         reply_markup=keyboard
     )
 
-# AdsGram visszahívási végpont a jutalom jóváírásához (Blokk ID: 42866)
 async def handle_reward(request: web.Request):
     user_id_str = request.query.get("user_id")
     
@@ -47,12 +43,10 @@ async def handle_reward(request: web.Request):
     except ValueError:
         return web.json_response({"error": "Érvénytelen user_id formátum"}, status=400)
     
-    # Token jóváírása a felhasználónak
     if user_id not in user_balances:
         user_balances[user_id] = 0
-    user_balances[user_id] += 10  # 10 token jár a reklámért
+    user_balances[user_id] += 10
     
-    # Értesítés küldése Telegramon keresztül
     try:
         await bot.send_message(
             chat_id=user_id,
