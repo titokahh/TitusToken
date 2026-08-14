@@ -49,7 +49,7 @@ async def handle_reward(request: web.Request):
     user_id_str = request.query.get("user_id")
     
     if not user_id_str:
-        return web.json_response({"error": "Hiányzó user_id"}, status0=400)
+        return web.json_response({"error": "Hiányzó user_id"}, status=400)
     
     try:
         user_id = int(user_id_str)
