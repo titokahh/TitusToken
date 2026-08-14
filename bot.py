@@ -1,9 +1,15 @@
 import os
+import logging
 from aiohttp import web
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
+logging.basicConfig(level=logging.INFO)
+
 TOKEN = os.environ.get("TOKEN")
+
+if not TOKEN:
+    raise ValueError("A TOKEN környezeti változó hiányzik!")
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
@@ -12,25 +18,35 @@ user_balances = {}
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
-    user_id = message.from_user.id
-    if user_id not in user_balances:
-        user_balances[user_id] = 0
-    
-    web_app_url = "https://sajt-token-bot-production.up.railway.app"
-    keyboard = types.InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                types.InlineKeyboardButton(
-                    text="🎮 Játék & Reklámok", 
-                    web_app=types.WebAppInfo(url=web_app_url)
-                )
+    try:
+        user_id = message.from_user.id
+        if user_id not in user_balances:
+            user_balances[user_id] = 0
+        
+        web_app_url = "https://sajt-token-bot-production.up.railway.app"
+        keyboard = types.InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    types.InlineKeyboardButton(
+                        text="🎮 Játék & Reklámok", 
+                        web_app=types.WebAppInfo(url=web_app_url)
+                    )
+                ]
             ]
-        ]
-    )
-    await message.answer(
-        f"Üdvözöllek a Tito Token Tesztnet botban!\n\nJelenlegi egyenleged: {user_balances[user_id]} token.",
-        reply_markup=keyboard
-    )
+        )
+        await message.answer(
+            f"Üdvözöllek a Tito Token Tesztnet botban!\n\nJelenlegi egyenleged: {user_balances[user_id]} token.",
+            reply_markup=keyboard
+        )
+    except Exception as e:
+        logging.error(f"Hiba a start parancsnál: {e}")
+
+@dp.message()
+async def handle_all_messages(message: types.Message):
+    try:
+        await message.answer("Szia! A gomb elindításához kérlek küldd el a /start parancsot!")
+    except Exception as e:
+        logging.error(f"Hiba az üzenet kezelésekor: {e}")
 
 async def handle_reward(request: web.Request):
     user_id_str = request.query.get("user_id")
@@ -53,7 +69,7 @@ async def handle_reward(request: web.Request):
             text=f"🎉 Gratulálok! Megnézted a hirdetést, és jóváírtunk neked 10 tokent!\nÖsszes egyenleged: {user_balances[user_id]} token."
         )
     except Exception as e:
-        print(f"Hiba az üzenet küldésekor: {e}")
+        logging.error(f"Hiba az értesítés küldésekor: {e}")
     
     return web.json_response({"status": "success", "reward": 10})
 
@@ -76,7 +92,7 @@ if __name__ == "__main__":
         await runner.setup()
         site = web.TCPSite(runner, "0.0.0.0", port)
         await site.start()
-        print(f"Web szerver elindult a {port} porton.")
+        logging.info(f"Web szerver elindult a {port} porton.")
         
         await dp.start_polling(bot)
 
