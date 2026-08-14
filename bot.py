@@ -38,6 +38,19 @@ async def cmd_start(message: types.Message):
     except Exception as e:
         logging.error(f"Hiba a start parancsnál: {e}")
 
+@dp.message(Command("stats"))
+async def cmd_stats(message: types.Message):
+    try:
+        total_users = len(user_balances)
+        total_tokens = sum(user_balances.values())
+        await message.answer(
+            f"📊 **Statisztika:**\n"
+            f"• Összes regisztrált felhasználó: {total_users} fő\n"
+            f"• Felhasználók egyenlege összesen: {total_tokens} token"
+        )
+    except Exception as e:
+        logging.error(f"Hiba a stats parancsnál: {e}")
+
 @dp.message()
 async def handle_all_messages(message: types.Message):
     try:
