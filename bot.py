@@ -3,7 +3,7 @@ from aiohttp import web
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
-TOKEN = "8865477160:AAEP19lvfc8g_Ztr9YeXp2gR04CVr0-nihI"
+TOKEN = "8865477160:AAHxLidy6fkQKYK3bzcz_aMKVVYVworiJWQ"
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
