@@ -3,7 +3,7 @@ import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
-logging.basicConfig(level=logging.INFO)
+logging.TOKEN = "8865477160:AAHxLidy6fkQKYK3bzcz_aMKVVYVworiJWQ"
 
 TOKEN = os.environ.get("TOKEN")
 if not TOKEN:
