@@ -6,10 +6,7 @@ from aiogram.filters import Command
 
 logging.basicConfig(level=logging.INFO)
 
-TOKEN = os.environ.get("TOKEN")
-
-if not TOKEN:
-    raise ValueError("A TOKEN környezeti változó hiányzik!")
+TOKEN = "8865477160:AAHxLidy6fkQKYK3bzcz_aMKVVYVworiJWQ"
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
@@ -52,7 +49,7 @@ async def handle_reward(request: web.Request):
     user_id_str = request.query.get("user_id")
     
     if not user_id_str:
-        return web.json_response({"error": "Hiányzó user_id"}, status=400)
+        return web.json_response({"error": "Hiányzó user_id"}, status0=400)
     
     try:
         user_id = int(user_id_str)
