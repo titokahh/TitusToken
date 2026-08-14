@@ -70,8 +70,8 @@ async def cmd_stats(message: types.Message):
     stats_text = (
         f"📊 **Rendszer Statisztika:**\n\n"
         f"• Összes regisztrált felhasználó: **{total_count}** fő\n"
-        f"• Eddig összesen kitermelve: **{total_mined:.4f}** SAJT\n"
-        f"• A 3 milliós bányászható alapból hátra van: **{remaining_pool:.4f}** SAJT"
+        f"• Eddig összesen kitermelve: **{total_mined:.4f}**\n"
+        f"• A 3 milliós bányászható alapból hátra van: **{remaining_pool:.4f}**"
     )
     await message.answer(stats_text, parse_mode="Markdown")
 
@@ -104,14 +104,13 @@ async def callback_listener(callback: types.CallbackQuery):
                 f"🤖 **Auto-Bot Státusz: 🟢 AKTÍV**\n\n"
                 f"Az Autobot éppen dolgozik a háttérben!\n"
                 f"• Hátralévő idő: **{hours} óra {minutes} perc**\n"
-                f"• Jelenlegi egyenleg: **{user_info['balance']:.4f} SAJT**"
+                f"• Jelenlegi egyenleg: **{user_info['balance']:.4f}**"
             )
             await callback.message.answer(auto_desc, parse_mode="Markdown")
         else:
             if user_info["autobot_active"] and user_info["autobot_end_time"] and now >= user_info["autobot_end_time"]:
                 user_info["autobot_active"] = False
 
-            # Átadjuk a user_id-t a Web App URL-nek, hogy a hirdetés tudja, kinek jár a jutalom
             web_app_url = f"https://sajt-token-bot-production.up.railway.app/?user_id={user_id}"
             builder = InlineKeyboardBuilder()
             builder.row(types.InlineKeyboardButton(text="📺 Hirdetés megtekintése (Mini App)", web_app=types.WebAppInfo(url=web_app_url)))
@@ -184,9 +183,9 @@ async def callback_listener(callback: types.CallbackQuery):
         await callback.answer()
         info_text = (
             "ℹ️ **Sajt Token Hivatalos Tokenomika:**\n\n"
-            "• **Maximális készlet:** 5,000,000 SAJT\n"
+            "• **Maximális készlet:** 5,000,000\n"
             "• **Utángyártás:** Nincs (Szigorúan korlátozott)\n"
-            "• **Tito részesedése:** 2,000,000 SAJT\n\n"
+            "• **Tito részesedése:** 2,000,000\n\n"
             "📊 **Reklám Bevételek Elosztása:**\n"
             "• 💧 **40%** -> Likviditás\n"
             "• 🔥 **30%** -> Egetés (Burn)\n"
@@ -206,12 +205,12 @@ async def handle_reward(request: web.Request):
         return web.json_response({"error": "Érvénytelen user_id formátum"}, status=400)
     
     user_info = get_user(user_id)
-    user_info["balance"] += 0.02  # Hirdetés utáni jóváírás
+    user_info["balance"] += 0.02
     
     try:
         await bot.send_message(
             chat_id=user_id,
-            text=f"🎉 **Adsgram Hirdetés Teljesítve!**\nJóváírtunk neked +0.02 SAJT tokent.\nJelenlegi egyenleged: **{user_info['balance']:.4f} SAJT**",
+            text=f"🎉 **Adsgram Hirdetés Teljesítve!**\nJóváírtunk neked +0.02 tokent.\nJelenlegi egyenleged: **{user_info['balance']:.4f}**",
             parse_mode="Markdown"
         )
     except Exception as e:
@@ -219,7 +218,6 @@ async def handle_reward(request: web.Request):
     
     return web.json_response({"status": "success", "reward": 0.02})
 
-# A Mini App HTML oldala a beágyazott Adsgram scripttel (42866 blokk)
 async def index(request):
     user_id = request.query.get("user_id", "")
     html_content = f"""
@@ -278,7 +276,6 @@ async def index(request):
 
         <script>
             const userId = "{user_id}";
-            // Adsgram inicializálása a 42866-os blokk azonosítóval
             const adController = window.Adsgram.init({{ blockId: "42866" }});
 
             async function triggerAd() {{
