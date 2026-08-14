@@ -85,7 +85,7 @@ async def callback_listener(callback: types.CallbackQuery):
     if data == "balance":
         await callback.answer()
         bal = user_info["balance"]
-        await callback.message.answer(f"🔥 **Egyenleged részletezése:**\n\n• Elérhető egyenleg: **{bal:.4f}** Sajt Token", parse_mode="Markdown")
+        await callback.message.answer(f"🔥 **Egyenleged részletezése:**\n\n• Elérhető egyenleg: **{bal:.4f}**", parse_mode="Markdown")
 
     elif data == "mining":
         await callback.answer()
