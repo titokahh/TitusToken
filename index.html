@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Titus Token Auto-Claim</title>
+    <title>Titus Token Auto-Claim & Verseny</title>
     <!-- AdsGram SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
@@ -66,9 +66,10 @@
             color: #cbd5e1;
             margin-bottom: 15px;
             background: #1e293b;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
             border: 1px solid #334155;
+            text-align: left;
         }
         .action-btn {
             width: 100%;
@@ -90,7 +91,7 @@
 <body>
 
     <div class="container">
-        <h1>TITUS TOKEN AUTO-CLAIM</h1>
+        <h1>TITUS TOKEN RENDSZER</h1>
         
         <div class="coin-box">
             <div style="font-size: 22px;">⚡</div>
@@ -109,7 +110,7 @@
 
         <!-- 24 órás Auto-Claim aktiválása (5 videó megtekintésével) -->
         <button class="action-btn btn-autoclaim" id="autoClaimVideoBtn">
-            ⚡ 24h Auto-Claim Videó (1/5)
+            ⚡ 24h Auto-Claim Videó (0/5)
         </button>
         
         <!-- Extra Videó Verseny Gomb -->
@@ -136,11 +137,11 @@
 
             if (expiry && now < expiry) {
                 const remainingHours = Math.ceil((expiry - now) / (1000 * 60 * 60));
-                autoClaimStatus.innerHTML = ` Állapot: 🟢 24h Auto-Claim Aktív! (${remainingHours} óra hátra)`;
+                autoClaimStatus.innerHTML = `🟢 <b>Auto-Claim Aktív!</b><br>Hátralévő idő: ${remainingHours} óra`;
                 autoClaimVideoBtn.innerText = "⚡ Auto-Claim Már Működik";
                 autoClaimVideoBtn.style.opacity = "0.6";
             } else {
-                autoClaimStatus.innerHTML = ` Állapot: 🔴 Nem aktív (Megtekintve: ${watchedAutoClaimVideos}/5 videó)`;
+                autoClaimStatus.innerHTML = `🔴 <b>Auto-Claim Nem Aktív</b><br>Megtekintett videók: ${watchedAutoClaimVideos}/5 (24 órához)`;
                 autoClaimVideoBtn.innerText = `⚡ 24h Auto-Claim Videó (${watchedAutoClaimVideos}/5)`;
                 autoClaimVideoBtn.style.opacity = "1";
             }
@@ -148,7 +149,7 @@
 
         updateUIState();
 
-        // AdsGram Block ID (írd be a sajátod)
+        // AdsGram Block ID (írd be a sajátod a helyére)
         const adsgramBlockId = "itt_a_te_block_id_d";
 
         // 1. Auto-Claim videók gyűjtése (5 db kell a 24 órához)
@@ -171,7 +172,7 @@
                         localStorage.setItem('autoClaimExpiry', expiryTime);
                         watchedAutoClaimVideos = 0;
                         localStorage.setItem('watchedAutoClaimVideos', 0);
-                        alert("Gratulálok! Teljesítetted az 5 videót, a 24 órás Auto-Claim aktiválva!");
+                        alert("Gratulálok, Tito! Teljesítetted az 5 videót, a 24 órás Auto-Claim aktiválva!");
                     } else {
                         alert(`Videó sikeresen megtekintve! (${watchedAutoClaimVideos}/5)`);
                     }
@@ -193,7 +194,7 @@
                 adController.show().then(() => {
                     userBalance += 10;
                     balanceDisplay.innerText = userBalance + " TITUS";
-                    alert("Sikeres extra videó! Pontod rögzítve a verseny ranglistáján.");
+                    alert("Sikeres extra videó, Tito! Pontod rögzítve a verseny ranglistáján.");
                 }).catch((result) => {
                     console.log("Hirdetés megszakítva:", result);
                     alert("A hirdetés nem lett végignézve.");
@@ -204,7 +205,7 @@
         });
 
         document.getElementById('claimBtn').addEventListener('click', () => {
-            alert("Kifizetés igénylése elküldve!");
+            alert("Kifizetés igénylése elküldve, Tito!");
         });
     </script>
 </body>
