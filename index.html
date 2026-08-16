@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Titus Token Premium</title>
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
-    <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -18,8 +17,46 @@
         body { margin: 0; background-color: var(--bg); color: var(--text-light); font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; min-height: 100vh; }
         .app { width: 100%; max-width: 400px; padding: 20px; box-sizing: border-box; text-align: center; }
         
-        .gold-coin { width: 120px; height: 120px; background: radial-gradient(circle, #fcd567, #ab853d); border-radius: 50%; margin: 10px auto 20px auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); border: 3px solid var(--gold); }
-        .coin-inner { color: #5a420b; font-weight: bold; font-size: 16px; }
+        /* 3D Forgó Érme Animáció */
+        .coin-container {
+            perspective: 1000px;
+            width: 130px;
+            height: 130px;
+            margin: 10px auto 20px auto;
+        }
+        .coin-3d {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: slowSpin 6s infinite linear;
+        }
+        @keyframes slowSpin {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+        .coin-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fcd567, #b8860b, #8b6508);
+            border: 4px solid var(--gold);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #3d2b00;
+            font-weight: bold;
+            font-size: 15px;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
+            backface-visibility: hidden;
+            text-align: center;
+            line-height: 1.2;
+        }
+        .coin-back {
+            transform: rotateY(180deg);
+        }
 
         h1 { font-size: 18px; color: var(--gold); margin: 5px 0; letter-spacing: 1px; }
         
@@ -48,8 +85,12 @@
     <div class="app">
         <h1>TITUS TOKEN BÁNYÁSZAT</h1>
         
-        <div class="gold-coin">
-            <div class="coin-inner">TITUS</div>
+        <!-- 3D Forgó Érme -->
+        <div class="coin-container">
+            <div class="coin-3d">
+                <div class="coin-face">👑<br>TITUS<br>TOKEN</div>
+                <div class="coin-face coin-back">💎<br>TITUS<br>MINING</div>
+            </div>
         </div>
 
         <div class="balance-box">
@@ -67,7 +108,7 @@
             <button class="btn btn-red" id="stopBtn">⏹️ LEÁLLÍT</button>
             <button class="btn btn-blue" id="claimBtn">💰 KIFIZETÉS</button>
             <button class="btn btn-grey" id="extraBtn">🎬 EXTRA VIDEÓ</button>
-            <button class="btn btn-gold" id="referBtn">🤝 BARÁT MEGHÍVÁSA</button>
+            <button class="btn-gold btn" id="referBtn">🤝 BARÁT MEGHÍVÁSA</button>
             <button class="btn btn-grey" id="settingsBtn">⚙️ BEÁLLÍTÁSOK</button>
         </div>
 
@@ -86,10 +127,9 @@
     </div>
 
     <script>
-        // Inicializálás
         window.Telegram.WebApp.ready();
         const userId = window.Telegram.WebApp.initDataUnsafe.user?.id || "TESZT_USER";
-        const botUsername = "TitusToken_bot"; // <--- IDE ÍRD BE A BOTOD USERNAME-JÉT!
+        const botUsername = "TitusToken_bot";
 
         let balance = parseFloat(localStorage.getItem('userBalance')) || 0;
         let watchedAutoClaimVideos = parseInt(localStorage.getItem('watchedAutoClaimVideos')) || 0;
@@ -116,7 +156,6 @@
             } else { alert("Ad network loading..."); }
         }
 
-        // Referral logika
         document.getElementById('referBtn').addEventListener('click', () => {
             const referLink = `https://t.me/${botUsername}?start=${userId}`;
             navigator.clipboard.writeText(referLink).then(() => {
@@ -124,7 +163,6 @@
             });
         });
 
-        // Alap funkciók (Auto-claim, stb.)
         document.getElementById('startBtn').addEventListener('click', function startAdChain() {
             const expiry = localStorage.getItem('autoClaimExpiry');
             if (expiry && Date.now() < expiry) { alert("Már aktív!"); return; }
@@ -151,8 +189,19 @@
                 alert("Sikeres extra videó! +10 TITUS.");
             });
         });
-        
-        // ... (Kifizetés, Beállítások és Modals maradhat az előzőek szerint)
+
+        document.getElementById('privacyBtn').addEventListener('click', (e) => { 
+            e.preventDefault();
+            document.getElementById('mTitle').innerText = "Privacy Policy";
+            document.getElementById('mText').innerHTML = "We do not store PII. Ads powered by AdsGram.";
+            document.getElementById('legalModal').style.display = "flex";
+        });
+        document.getElementById('termsBtn').addEventListener('click', (e) => { 
+            e.preventDefault();
+            document.getElementById('mTitle').innerText = "Terms of Service";
+            document.getElementById('mText').innerHTML = "Virtual assets for ranking purposes only.";
+            document.getElementById('legalModal').style.display = "flex";
+        });
     </script>
 </body>
 </html>
