@@ -1,6 +1,10 @@
 import os
 import telebot
-from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
+from telebot.types import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    WebAppInfo,
+)
 
 TOKEN = "8797502641:AAFLNc-S9Lmeo3jGvnN0Up-Ff7FdJZdd7DE"
 bot = telebot.TeleBot(TOKEN)
@@ -59,6 +63,13 @@ def get_info_text():
 @bot.message_handler(commands=["start"])
 def send_welcome(message):
   markup = InlineKeyboardMarkup()
+  # Itt add meg a saját webalkalmazásod linkjét (HTTPS szükséges!)
+  markup.row(
+      InlineKeyboardButton(
+          "🚀 TitusToken App Megnyitása",
+          web_app=WebAppInfo(url="https://example.com/app"),
+      )
+  )
   markup.row(InlineKeyboardButton("ℹ️ Infó & Státusz", callback_data="info_menu"))
   markup.row(
       InlineKeyboardButton(
@@ -67,8 +78,8 @@ def send_welcome(message):
   )
   bot.send_message(
       message.chat.id,
-      "Szia Tito! Üdvözöllek a TitusToken botban. Válassz az alábbi"
-      " lehetőségek közül:",
+      "Szia Tito! Üdvözöllek a TitusToken botban. Nyisd meg az alkalmazást"
+      " alább:",
       reply_markup=markup,
   )
 
@@ -205,6 +216,12 @@ def handle_callback(call):
   elif call.data == "main_menu":
     bot.answer_callback_query(call.id)
     markup = InlineKeyboardMarkup()
+    markup.row(
+        InlineKeyboardButton(
+            "🚀 TitusToken App Megnyitása",
+            web_app=WebAppInfo(url="https://example.com/app"),
+        )
+    )
     markup.row(InlineKeyboardButton("ℹ️ Infó & Státusz", callback_data="info_menu"))
     markup.row(
         InlineKeyboardButton(
@@ -214,8 +231,8 @@ def handle_callback(call):
     bot.edit_message_text(
         chat_id=chat_id,
         message_id=call.message.message_id,
-        text=f"Szia Tito! Üdvözöllek a TitusToken botban. Válassz az alábbi"
-        " lehetőségek közül:",
+        text="Szia Tito! Üdvözöllek a TitusToken botban. Nyisd meg az"
+        " alkalmazást alább:",
         reply_markup=markup,
     )
 
