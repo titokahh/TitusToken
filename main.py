@@ -63,11 +63,10 @@ def get_info_text():
 @bot.message_handler(commands=["start"])
 def send_welcome(message):
   markup = InlineKeyboardMarkup()
-  # Itt add meg a saját webalkalmazásod linkjét (HTTPS szükséges!)
   markup.row(
       InlineKeyboardButton(
           "🚀 TitusToken App Megnyitása",
-          web_app=WebAppInfo(url="https://example.com/app"),
+          web_app=WebAppInfo(url="https://titus-token.vercel.app"),
       )
   )
   markup.row(InlineKeyboardButton("ℹ️ Infó & Státusz", callback_data="info_menu"))
@@ -219,7 +218,7 @@ def handle_callback(call):
     markup.row(
         InlineKeyboardButton(
             "🚀 TitusToken App Megnyitása",
-            web_app=WebAppInfo(url="https://example.com/app"),
+            web_app=WebAppInfo(url="https://titus-token.vercel.app"),
         )
     )
     markup.row(InlineKeyboardButton("ℹ️ Infó & Státusz", callback_data="info_menu"))
