@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Titus Token Auto-Claim</title>
+    <!-- AdsGram SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         body {
@@ -107,10 +108,12 @@
             Állapot: 🔴 Nem aktív (Nézz meg 5 videót az aktiváláshoz: 0/5)
         </div>
 
+        <!-- Sorozatban induló Auto-Claim gomb -->
         <button class="action-btn btn-autoclaim" id="autoClaimVideoBtn">
             ⚡ 24h Auto-Claim Indítása (0/5)
         </button>
         
+        <!-- Extra Videó Verseny Gomb -->
         <button class="action-btn btn-extra" id="extraVideoBtn">
             🎬 Extra Videó (Verseny Főnyereményért)
         </button>
@@ -146,7 +149,8 @@
 
         updateUIState();
 
-        const adsgramBlockId = "itt_a_te_block_id_d";
+        // Beállítva a te valós AdsGram Block ID-d
+        const adsgramBlockId = "43125";
 
         // Függvény egyetlen hirdetés lejátszására
         function playSingleAd(onSuccess, onError) {
@@ -170,11 +174,9 @@
                 return;
             }
 
-            // Ha elértük az 5-öt, nem kell több
             if (watchedAutoClaimVideos >= 5) return;
 
             playSingleAd(() => {
-                // Sikeres videó
                 watchedAutoClaimVideos++;
                 localStorage.setItem('watchedAutoClaimVideos', watchedAutoClaimVideos);
 
@@ -186,7 +188,6 @@
                     alert("Gratulálok, Tito! Megnézted mind az 5 videót, a 24 órás Auto-Claim aktiválva!");
                 } else {
                     alert(`Sikeres videó! (${watchedAutoClaimVideos}/5). Jön a következő...`);
-                    // Automatikusan indítjuk a következőt egy kis szünet után
                     setTimeout(() => {
                         startAdChain();
                     }, 500);
