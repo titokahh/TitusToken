@@ -75,9 +75,9 @@
             <button class="btn btn-blue" id="claimBtn">💰 KIFIZETÉS</button>
             <button class="btn btn-grey" id="extraBtn">🎬 EXTRA VIDEÓ</button>
             <button class="btn-gold btn" id="referBtn">🤝 BARÁT MEGHÍVÁSA</button>
-            <button class="btn btn-grey" id="infoBtn">ℹ️ INFÓ</button>
-            <button class="btn btn-grey" id="statusBtn">📊 STÁTUSZ</button>
+            <button class="btn btn-grey" id="infoStatusBtn">ℹ️ STÁTUSZ & INFÓ</button>
             <button class="btn btn-grey" id="settingsBtn">⚙️ BEÁLLÍTÁSOK</button>
+            <button class="btn btn-grey" onclick="location.reload()">🔄 FRISSÍT</button>
         </div>
 
         <div class="footer">
@@ -85,12 +85,12 @@
         </div>
     </div>
 
-    <!-- Jogi és Információs Modal -->
+    <!-- Modal Ablak -->
     <div id="legalModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100; justify-content:center; align-items:center;">
-        <div style="background:#1a1a1a; padding:20px; width:80%; border-radius:10px; text-align:left; border: 1px solid #333;">
+        <div style="background:#1a1a1a; padding:20px; width:85%; border-radius:10px; text-align:left; border: 1px solid #333; max-height: 80vh; overflow-y: auto;">
             <h2 id="mTitle" style="color:var(--gold); margin-top:0;"></h2>
-            <p id="mText" style="font-size:13px; color:#ccc;"></p>
-            <button onclick="document.getElementById('legalModal').style.display='none'" style="width:100%; padding:10px; background:var(--gold); border:none; border-radius:5px; margin-top:10px; font-weight:bold;">Bezárás</button>
+            <div id="mText" style="font-size:12px; color:#ccc; line-height: 1.5;"></div>
+            <button onclick="document.getElementById('legalModal').style.display='none'" style="width:100%; padding:10px; background:var(--gold); border:none; border-radius:5px; margin-top:15px; font-weight:bold;">Bezárás</button>
         </div>
     </div>
 
@@ -132,21 +132,39 @@
             updateUI();
             const referLink = `https://t.me/${botUsername}?start=${userId}`;
             navigator.clipboard.writeText(referLink).then(() => {
-                alert("Meghívó link másolva! Eddigi meghívásaid: " + referralCount + ". Küldd el barátaidnak!");
+                alert("Meghívó link másolva! Eddigi meghívásaid: " + referralCount);
             });
         });
 
-        // Új gombok logikája
-        document.getElementById('infoBtn').addEventListener('click', () => {
-            document.getElementById('mTitle').innerText = "Titus Token Infó";
-            document.getElementById('mText').innerHTML = "A Titus Token a közösségi bányászat projektje. Gyűjtsd a videókkal a likviditási alapot és hívd meg barátaidat!<br><br><b>Nyeremények a versenyben:</b><br>1. hely: 1000 TITUS<br>2. hely: 500 TITUS<br>3. hely: 250 TITUS";
-            document.getElementById('legalModal').style.display = "flex";
-        });
-
-        document.getElementById('statusBtn').addEventListener('click', () => {
-            document.getElementById('mTitle').innerText = "Rendszer Státusz";
+        // Frissített Infó & Státusz gomb
+        document.getElementById('infoStatusBtn').addEventListener('click', () => {
+            document.getElementById('mTitle').innerText = "📊 Rendszer Státusz & Infó";
             const adsActive = window.Adsgram ? "🟢 Aktív" : "🟡 Betöltés alatt";
-            document.getElementById('mText').innerHTML = `Hirdetési rendszer: ${adsActive}<br>Block ID: ${adsgramBlockId}<br>App állapot: Futásban`;
+            document.getElementById('mText').innerHTML = `
+                <b>👥 Felhasználók:</b> 1 / 2,000<br>
+                <b>📌 Jelenlegi státusz:</b> 🗡️ Teszt fázis<br><br>
+                <b>💎 ÉLŐ Token Keret & Készlet:</b><br>
+                • Teljes: 5,000,000 token<br>
+                • Tito részesedése: 2,000,000 token<br>
+                • Kiosztott: 0.00 token<br>
+                • Élő bányászható: 3,000,000.00 token<br><br>
+                <b>⚙️ Főbb Paraméterek:</b><br>
+                • Utángyártás: Nincs<br>
+                • Bányászati ciklus: 6 óránként (0.02 token)<br>
+                • Auto-claim: 5 valódi videó = 24h<br>
+                • Ajánlás: 0.5 token/fő<br><br>
+                <b>💰 Bevétel elosztás:</b><br>
+                • 60% -> Likviditás<br>
+                • 20% -> Égetés (Burn)<br>
+                • 20% -> Fejlesztés<br><br>
+                <b>🏆 VERSENY NYEREMÉNYEK:</b><br>
+                1. hely: 1000 TITUS<br>
+                2. hely: 500 TITUS<br>
+                3. hely: 250 TITUS<br><br>
+                <hr style="border:0; border-top:1px solid #333;">
+                <b>Rendszer:</b> ${adsActive}<br>
+                <b>Block ID:</b> ${adsgramBlockId}
+            `;
             document.getElementById('legalModal').style.display = "flex";
         });
 
@@ -173,7 +191,7 @@
                 extraVideosCount++;
                 localStorage.setItem('extraVideosCount', extraVideosCount);
                 updateUI();
-                alert("Köszönjük! A hirdetés bevétele a likviditási alapba került.\nEddigi extra videóid a versenyhez: " + extraVideosCount);
+                alert("Köszönjük! A hirdetés bevétele a likviditási alapba került.");
             });
         });
 
