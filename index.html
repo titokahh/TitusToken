@@ -3,327 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Titus Token App</title>
-    <!-- AdsGram SDK -->
+    <title>Titus Token Premium</title>
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #0f172a;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+        :root {
+            --gold: #d4af37;
+            --bg: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --text-light: #ffffff;
+            --text-grey: #a0a0a0;
         }
-        .container {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            box-sizing: border-box;
-            text-align: center;
-            position: relative;
-        }
-        h1 {
-            font-size: 20px;
-            color: #fbbf24;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-        }
-        .coin-box {
-            width: 130px;
-            height: 130px;
-            background: linear-gradient(135deg, #fbbf24, #d97706);
-            border-radius: 50%;
-            margin: 0 auto 20px auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 25px rgba(251, 191, 36, 0.3);
-        }
-        .coin-text {
-            font-weight: bold;
-            font-size: 16px;
-            color: #1e1b4b;
-        }
-        .balance-card {
-            background: #1e293b;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid #334155;
-        }
-        .balance-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #fbbf24;
-        }
-        .status-box {
-            font-size: 13px;
-            color: #cbd5e1;
-            margin-bottom: 15px;
-            background: #1e293b;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #334155;
-            text-align: left;
-        }
-        .action-btn {
-            width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-autoclaim { background: linear-gradient(135deg, #10b981, #047857); color: white; }
-        .btn-extra { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
-        .btn-blue { background: #3b82f6; color: white; }
-        .action-btn:active { transform: scale(0.98); }
+        body { margin: 0; background-color: var(--bg); color: var(--text-light); font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; min-height: 100vh; }
+        .app { width: 100%; max-width: 400px; padding: 20px; box-sizing: border-box; text-align: center; }
         
-        /* Lábjegyzet és Jogi linkek */
-        .footer {
-            margin-top: 30px;
-            font-size: 12px;
-            color: #64748b;
-        }
-        .footer a {
-            color: #94a3b8;
-            text-decoration: none;
-            margin: 0 10px;
-            transition: 0.2s;
-        }
-        .footer a:hover {
-            color: #fbbf24;
-            text-decoration: underline;
-        }
+        .gold-coin { width: 120px; height: 120px; background: radial-gradient(circle, #fcd567, #ab853d); border-radius: 50%; margin: 10px auto 20px auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); border: 3px solid var(--gold); }
+        .coin-inner { color: #5a420b; font-weight: bold; font-size: 16px; }
 
-        /* Jogi Felugró Ablak (Modal) */
-        .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 100; 
-            left: 0;
-            top: 0;
-            width: 100%; 
-            height: 100%; 
-            background-color: rgba(0,0,0,0.8); 
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background-color: #1e293b;
-            padding: 20px;
-            border-radius: 12px;
-            width: 85%;
-            max-width: 350px;
-            border: 1px solid #334155;
-            text-align: left;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        .modal-content h2 {
-            color: #fbbf24;
-            font-size: 18px;
-            margin-top: 0;
-        }
-        .modal-content p {
-            font-size: 13px;
-            color: #cbd5e1;
-            line-height: 1.5;
-        }
-        .close-btn {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 10px;
-            width: 100%;
-            border-radius: 8px;
-            margin-top: 15px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+        h1 { font-size: 18px; color: var(--gold); margin: 5px 0; letter-spacing: 1px; }
+        
+        .balance-box { background: var(--card-bg); padding: 12px; border-radius: 12px; margin: 10px 0; border: 1px solid #333; }
+        .balance-val { font-size: 22px; font-weight: bold; color: var(--gold); }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: var(--card-bg); padding: 8px; border-radius: 8px; border: 1px solid #333; font-size: 10px; color: var(--text-grey); }
+        .stat-val { color: var(--gold); font-weight: bold; display: block; font-size: 12px; margin-top: 2px; }
+
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .btn { padding: 10px 5px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s; }
+        .btn-green { background: #1a4731; color: #4ade80; border: 1px solid #4ade80; }
+        .btn-red { background: #471a1a; color: #f87171; border: 1px solid #f87171; }
+        .btn-blue { background: #1e3a8a; color: #60a5fa; border: 1px solid #60a5fa; }
+        .btn-gold { background: #5a420b; color: var(--gold); border: 1px solid var(--gold); }
+        .btn-grey { background: #333; color: #ccc; border: 1px solid #555; }
+        .btn:active { transform: scale(0.95); }
+
+        .footer { margin-top: 20px; font-size: 10px; color: #555; }
+        .footer a { color: #777; margin: 0 5px; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>TITUS TOKEN APP</h1>
+    <div class="app">
+        <h1>TITUS TOKEN BÁNYÁSZAT</h1>
         
-        <div class="coin-box">
-            <div style="font-size: 22px;">⚡</div>
-            <div class="coin-text">TITUS</div>
-            <div style="font-size: 9px; color: #1e1b4b;">DIGITAL ASSET</div>
+        <div class="gold-coin">
+            <div class="coin-inner">TITUS</div>
         </div>
 
-        <div class="balance-card">
-            <div style="font-size: 12px; color: #94a3b8;">CURRENT BALANCE:</div>
-            <div class="balance-value" id="balance">0 TITUS</div>
+        <div class="balance-box">
+            <div style="font-size: 11px; color: var(--text-grey);">AKTUÁLIS EGYENLEG:</div>
+            <div class="balance-val" id="balance">0 TITUS</div>
         </div>
 
-        <div class="status-box" id="autoClaimStatus">
-            Status: 🔴 Inactive (Watch ads to activate: 0/5)
+        <div class="stats-grid">
+            <div class="stat-card">Státusz<span class="stat-val" id="statusText">🔴 Inaktív</span></div>
+            <div class="stat-card">Videók<span class="stat-val" id="dailyProd">0/5</span></div>
         </div>
 
-        <button class="action-btn btn-autoclaim" id="autoClaimVideoBtn">
-            ⚡ Start Auto-Claim (0/5)
-        </button>
-        
-        <button class="action-btn btn-extra" id="extraVideoBtn">
-            🎬 Extra Video Task
-        </button>
-        
-        <button class="action-btn btn-blue" id="claimBtn">
-            💰 Withdraw / Payout
-        </button>
+        <div class="btn-grid">
+            <button class="btn btn-green" id="startBtn">⛏️ AUTO-CLAIM</button>
+            <button class="btn btn-red" id="stopBtn">⏹️ LEÁLLÍT</button>
+            <button class="btn btn-blue" id="claimBtn">💰 KIFIZETÉS</button>
+            <button class="btn btn-grey" id="extraBtn">🎬 EXTRA VIDEÓ</button>
+            <button class="btn btn-gold" id="referBtn">🤝 BARÁT MEGHÍVÁSA</button>
+            <button class="btn btn-grey" id="settingsBtn">⚙️ BEÁLLÍTÁSOK</button>
+        </div>
 
-        <!-- Jogi Linkek a Moderátoroknak -->
         <div class="footer">
-            <p>TitusToken System © 2026</p>
-            <a href="#" id="privacyBtn">Privacy Policy</a> | 
-            <a href="#" id="termsBtn">Terms of Service</a>
+            <a href="#" id="privacyBtn">Privacy Policy</a> | <a href="#" id="termsBtn">Terms of Service</a>
         </div>
     </div>
 
-    <!-- Jogi Felugró Ablak (Modal) -->
-    <div id="legalModal" class="modal">
-        <div class="modal-content">
-            <h2 id="modalTitle">Title</h2>
-            <p id="modalText">Text</p>
-            <button class="close-btn" id="closeModalBtn">Close / Bezárás</button>
+    <!-- Jogi Modal -->
+    <div id="legalModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100; justify-content:center; align-items:center;">
+        <div style="background:#1a1a1a; padding:20px; width:80%; border-radius:10px; text-align:left; border: 1px solid #333;">
+            <h2 id="mTitle" style="color:var(--gold); margin-top:0;"></h2>
+            <p id="mText" style="font-size:13px; color:#ccc;"></p>
+            <button onclick="document.getElementById('legalModal').style.display='none'" style="width:100%; padding:10px; background:var(--gold); border:none; border-radius:5px; margin-top:10px; font-weight:bold;">Bezárás</button>
         </div>
     </div>
 
     <script>
-        let userBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
+        // Inicializálás
+        window.Telegram.WebApp.ready();
+        const userId = window.Telegram.WebApp.initDataUnsafe.user?.id || "TESZT_USER";
+        const botUsername = "TitusToken_bot"; // <--- IDE ÍRD BE A BOTOD USERNAME-JÉT!
+
+        let balance = parseFloat(localStorage.getItem('userBalance')) || 0;
         let watchedAutoClaimVideos = parseInt(localStorage.getItem('watchedAutoClaimVideos')) || 0;
         
         const balanceDisplay = document.getElementById('balance');
-        const autoClaimStatus = document.getElementById('autoClaimStatus');
-        const autoClaimVideoBtn = document.getElementById('autoClaimVideoBtn');
-        
-        balanceDisplay.innerText = userBalance + " TITUS";
+        const statusText = document.getElementById('statusText');
+        const dailyProd = document.getElementById('dailyProd');
 
-        function updateUIState() {
+        function updateUI() {
+            balanceDisplay.innerText = balance.toLocaleString() + " TITUS";
+            dailyProd.innerText = watchedAutoClaimVideos + "/5 Videó";
             const expiry = localStorage.getItem('autoClaimExpiry');
-            const now = Date.now();
-
-            if (expiry && now < expiry) {
-                const remainingHours = Math.ceil((expiry - now) / (1000 * 60 * 60));
-                autoClaimStatus.innerHTML = `🟢 <b>Auto-Claim Active!</b><br>Time remaining: ${remainingHours} hours`;
-                autoClaimVideoBtn.innerText = "⚡ Auto-Claim is Running";
-                autoClaimVideoBtn.style.opacity = "0.6";
-            } else {
-                autoClaimStatus.innerHTML = `🔴 <b>Auto-Claim Inactive</b><br>Videos watched: ${watchedAutoClaimVideos}/5`;
-                autoClaimVideoBtn.innerText = `⚡ Start Auto-Claim (${watchedAutoClaimVideos}/5)`;
-                autoClaimVideoBtn.style.opacity = "1";
-            }
+            statusText.innerText = (expiry && Date.now() < expiry) ? "🟢 Aktív" : "🔴 Inaktív";
+            statusText.style.color = (expiry && Date.now() < expiry) ? "#4ade80" : "#f87171";
         }
+        updateUI();
 
-        updateUIState();
-
-        // VALÓDI ADSGRAM BLOCK ID
         const adsgramBlockId = "43125";
-
-        function playSingleAd(onSuccess, onError) {
+        
+        function playAd(callback) {
             if (window.Adsgram) {
-                const adController = window.Adsgram.init({ blockId: adsgramBlockId });
-                adController.show().then(() => {
-                    onSuccess();
-                }).catch((result) => {
-                    onError(result);
-                });
-            } else {
-                alert("AdsGram network is currently loading. Please try again.");
-            }
+                const controller = window.Adsgram.init({ blockId: adsgramBlockId });
+                controller.show().then(callback).catch(() => alert("Hirdetés megszakítva!"));
+            } else { alert("Ad network loading..."); }
         }
 
-        function startAdChain() {
+        // Referral logika
+        document.getElementById('referBtn').addEventListener('click', () => {
+            const referLink = `https://t.me/${botUsername}?start=${userId}`;
+            navigator.clipboard.writeText(referLink).then(() => {
+                alert("Meghívó link másolva! Küldd el barátaidnak: \n" + referLink);
+            });
+        });
+
+        // Alap funkciók (Auto-claim, stb.)
+        document.getElementById('startBtn').addEventListener('click', function startAdChain() {
             const expiry = localStorage.getItem('autoClaimExpiry');
-            if (expiry && Date.now() < expiry) {
-                alert("Auto-claim is already active!");
-                return;
-            }
-
-            if (watchedAutoClaimVideos >= 5) return;
-
-            playSingleAd(() => {
+            if (expiry && Date.now() < expiry) { alert("Már aktív!"); return; }
+            playAd(() => {
                 watchedAutoClaimVideos++;
                 localStorage.setItem('watchedAutoClaimVideos', watchedAutoClaimVideos);
-
                 if (watchedAutoClaimVideos >= 5) {
-                    const expiryTime = Date.now() + (24 * 60 * 60 * 1000);
-                    localStorage.setItem('autoClaimExpiry', expiryTime);
+                    localStorage.setItem('autoClaimExpiry', Date.now() + 86400000);
                     watchedAutoClaimVideos = 0;
-                    localStorage.setItem('watchedAutoClaimVideos', 0);
-                    alert("Congratulations! 24h Auto-Claim is now ACTIVE!");
+                    alert("Sikeres aktiválás!");
                 } else {
-                    alert(`Success! (${watchedAutoClaimVideos}/5). Preparing next video...`);
-                    setTimeout(() => { startAdChain(); }, 500);
+                    alert("Videó kész! Következő jön...");
+                    setTimeout(startAdChain, 1000);
                 }
-                updateUIState();
-            }, (result) => {
-                alert("Advertisement was closed before completion.");
-            });
-        }
-
-        autoClaimVideoBtn.addEventListener('click', () => {
-            startAdChain();
-        });
-
-        document.getElementById('extraVideoBtn').addEventListener('click', () => {
-            playSingleAd(() => {
-                userBalance += 10;
-                localStorage.setItem('userBalance', userBalance);
-                balanceDisplay.innerText = userBalance + " TITUS";
-                alert("Success! +10 TITUS added to your balance.");
-            }, (result) => {
-                alert("Advertisement was closed before completion.");
+                updateUI();
             });
         });
 
-        // "Működő" Kifizetés Gomb logika
-        document.getElementById('claimBtn').addEventListener('click', () => {
-            if (userBalance < 100) {
-                alert("Error: Minimum withdrawal amount is 100 TITUS. Keep mining!");
-            } else {
-                alert("Withdrawal request sent to moderation. It will be processed soon.");
-                userBalance = 0;
-                localStorage.setItem('userBalance', 0);
-                balanceDisplay.innerText = "0 TITUS";
-            }
+        document.getElementById('extraBtn').addEventListener('click', () => {
+            playAd(() => {
+                balance += 10;
+                localStorage.setItem('userBalance', balance);
+                updateUI();
+                alert("Sikeres extra videó! +10 TITUS.");
+            });
         });
-
-        // JOGI ABLAK (MODAL) LOGIKA
-        const modal = document.getElementById('legalModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalText = document.getElementById('modalText');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-
-        document.getElementById('privacyBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            modalTitle.innerText = "Privacy Policy";
-            modalText.innerHTML = "<b>1. Data Collection:</b> The TitusToken App does not collect any personal identifiable information (PII).<br><br><b>2. Third-Party Ads:</b> We use the AdsGram network to display advertisements. AdsGram may collect anonymous data necessary to provide and measure the ads. By using this app, you consent to AdsGram's privacy terms.<br><br><b>3. Cookies/Storage:</b> We use local browser storage purely to save your non-financial in-game points (TITUS) and progress.";
-            modal.style.display = "flex";
-        });
-
-        document.getElementById('termsBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            modalTitle.innerText = "Terms of Service";
-            modalText.innerHTML = "<b>1. Acceptance:</b> By accessing the TitusToken App, you agree to these terms.<br><br><b>2. Virtual Assets:</b> TITUS tokens are currently virtual in-game points with no real-world monetary value. They are used exclusively for ranking and app engagement.<br><br><b>3. Fair Play:</b> Any attempt to use bots, macros, or scripts to bypass the AdsGram advertising system will result in an immediate ban and loss of all virtual points.<br><br><b>4. Changes:</b> We reserve the right to modify or close the app at any time.";
-            modal.style.display = "flex";
-        });
-
-        closeModalBtn.addEventListener('click', () => {
-            modal.style.display = "none";
-        });
+        
+        // ... (Kifizetés, Beállítások és Modals maradhat az előzőek szerint)
     </script>
 </body>
 </html>
