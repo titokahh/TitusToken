@@ -9,14 +9,12 @@ from telebot.types import (
 TOKEN = "8797502641:AAFLNc-S9Lmeo3jGvnN0Up-Ff7FdJZdd7DE"
 bot = telebot.TeleBot(TOKEN)
 
-# Rendszer adatok
 user_count = 1
 countdown_active = False
 max_supply = 5_000_000
 tito_share = 2_000_000
 total_mined_tokens = 0.0
 
-# Felhasználói adatok tárolása
 user_data = {}
 
 
@@ -131,12 +129,6 @@ def handle_callback(call):
     markup = InlineKeyboardMarkup()
     markup.row(
         InlineKeyboardButton(
-            "▶️ Valódi reklám megtekintése",
-            url="https://example.com/valodi-reklam",
-        )
-    )
-    markup.row(
-        InlineKeyboardButton(
             "🔄 Ellenőrzés / Frissítés", callback_data="check_ads"
         )
     )
@@ -187,12 +179,6 @@ def handle_callback(call):
         "2️⃣ Aki a legtöbb felhasználót hozza -> **500 token** jutalom!"
     )
     markup = InlineKeyboardMarkup()
-    markup.row(
-        InlineKeyboardButton(
-            "▶️ Valódi reklám megtekintése",
-            url="https://example.com/valodi-reklam",
-        )
-    )
     markup.row(
         InlineKeyboardButton(
             "🔄 Ellenőrzés / Frissítés", callback_data="check_ads"
