@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Titus Token Auto-Claim & Verseny</title>
-    <!-- AdsGram SDK -->
+    <title>Titus Token Auto-Claim</title>
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         body {
@@ -108,12 +107,10 @@
             Állapot: 🔴 Nem aktív (Nézz meg 5 videót az aktiváláshoz: 0/5)
         </div>
 
-        <!-- 24 órás Auto-Claim aktiválása (5 videó megtekintésével) -->
         <button class="action-btn btn-autoclaim" id="autoClaimVideoBtn">
-            ⚡ 24h Auto-Claim Videó (0/5)
+            ⚡ 24h Auto-Claim Indítása (0/5)
         </button>
         
-        <!-- Extra Videó Verseny Gomb -->
         <button class="action-btn btn-extra" id="extraVideoBtn">
             🎬 Extra Videó (Verseny Főnyereményért)
         </button>
@@ -142,66 +139,79 @@
                 autoClaimVideoBtn.style.opacity = "0.6";
             } else {
                 autoClaimStatus.innerHTML = `🔴 <b>Auto-Claim Nem Aktív</b><br>Megtekintett videók: ${watchedAutoClaimVideos}/5 (24 órához)`;
-                autoClaimVideoBtn.innerText = `⚡ 24h Auto-Claim Videó (${watchedAutoClaimVideos}/5)`;
+                autoClaimVideoBtn.innerText = `⚡ 24h Auto-Claim Indítása (${watchedAutoClaimVideos}/5)`;
                 autoClaimVideoBtn.style.opacity = "1";
             }
         }
 
         updateUIState();
 
-        // AdsGram Block ID (írd be a sajátod a helyére)
         const adsgramBlockId = "itt_a_te_block_id_d";
 
-        // 1. Auto-Claim videók gyűjtése (5 db kell a 24 órához)
-        autoClaimVideoBtn.addEventListener('click', () => {
+        // Függvény egyetlen hirdetés lejátszására
+        function playSingleAd(onSuccess, onError) {
+            if (window.Adsgram) {
+                const adController = window.Adsgram.init({ blockId: adsgramBlockId });
+                adController.show().then(() => {
+                    onSuccess();
+                }).catch((result) => {
+                    onError(result);
+                });
+            } else {
+                alert("Az AdsGram hirdetési rendszer még töltődik.");
+            }
+        }
+
+        // Lánc-szerű folyamat indító (egymás után nyitja a megtekintéseket)
+        function startAdChain() {
             const expiry = localStorage.getItem('autoClaimExpiry');
             if (expiry && Date.now() < expiry) {
-                alert("A 24 órás auto-claim már aktív!");
+                alert("A 24 órás auto-claim már aktív, Tito!");
                 return;
             }
 
-            if (window.Adsgram) {
-                const adController = window.Adsgram.init({ blockId: adsgramBlockId });
-                
-                adController.show().then(() => {
-                    watchedAutoClaimVideos++;
-                    localStorage.setItem('watchedAutoClaimVideos', watchedAutoClaimVideos);
+            // Ha elértük az 5-öt, nem kell több
+            if (watchedAutoClaimVideos >= 5) return;
 
-                    if (watchedAutoClaimVideos >= 5) {
-                        const expiryTime = Date.now() + (24 * 60 * 60 * 1000);
-                        localStorage.setItem('autoClaimExpiry', expiryTime);
-                        watchedAutoClaimVideos = 0;
-                        localStorage.setItem('watchedAutoClaimVideos', 0);
-                        alert("Gratulálok, Tito! Teljesítetted az 5 videót, a 24 órás Auto-Claim aktiválva!");
-                    } else {
-                        alert(`Videó sikeresen megtekintve! (${watchedAutoClaimVideos}/5)`);
-                    }
-                    updateUIState();
-                }).catch((result) => {
-                    console.log("Hirdetés megszakítva:", result);
-                    alert("A hirdetés nem lett végignézve.");
-                });
-            } else {
-                alert("Az AdsGram hirdetési rendszer még töltődik.");
-            }
+            playSingleAd(() => {
+                // Sikeres videó
+                watchedAutoClaimVideos++;
+                localStorage.setItem('watchedAutoClaimVideos', watchedAutoClaimVideos);
+
+                if (watchedAutoClaimVideos >= 5) {
+                    const expiryTime = Date.now() + (24 * 60 * 60 * 1000);
+                    localStorage.setItem('autoClaimExpiry', expiryTime);
+                    watchedAutoClaimVideos = 0;
+                    localStorage.setItem('watchedAutoClaimVideos', 0);
+                    alert("Gratulálok, Tito! Megnézted mind az 5 videót, a 24 órás Auto-Claim aktiválva!");
+                } else {
+                    alert(`Sikeres videó! (${watchedAutoClaimVideos}/5). Jön a következő...`);
+                    // Automatikusan indítjuk a következőt egy kis szünet után
+                    setTimeout(() => {
+                        startAdChain();
+                    }, 500);
+                }
+                updateUIState();
+            }, (result) => {
+                console.log("Hirdetés megszakítva:", result);
+                alert("A hirdetés megszakadt. A folyamat szünetel.");
+            });
+        }
+
+        autoClaimVideoBtn.addEventListener('click', () => {
+            startAdChain();
         });
 
-        // 2. Extra Videó Verseny Gomb
+        // Extra Videó Verseny Gomb
         document.getElementById('extraVideoBtn').addEventListener('click', () => {
-            if (window.Adsgram) {
-                const adController = window.Adsgram.init({ blockId: adsgramBlockId });
-                
-                adController.show().then(() => {
-                    userBalance += 10;
-                    balanceDisplay.innerText = userBalance + " TITUS";
-                    alert("Sikeres extra videó, Tito! Pontod rögzítve a verseny ranglistáján.");
-                }).catch((result) => {
-                    console.log("Hirdetés megszakítva:", result);
-                    alert("A hirdetés nem lett végignézve.");
-                });
-            } else {
-                alert("Az AdsGram hirdetési rendszer még töltődik.");
-            }
+            playSingleAd(() => {
+                userBalance += 10;
+                balanceDisplay.innerText = userBalance + " TITUS";
+                alert("Sikeres extra videó, Tito! Pontod rögzítve a verseny ranglistáján.");
+            }, (result) => {
+                console.log("Hirdetés megszakítva:", result);
+                alert("A hirdetés nem lett végignézve.");
+            });
         });
 
         document.getElementById('claimBtn').addEventListener('click', () => {
