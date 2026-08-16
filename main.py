@@ -10,9 +10,7 @@ user_count = 1
 countdown_active = False
 max_supply = 5_000_000
 tito_share = 2_000_000
-total_mined_tokens = (
-    0.0  # Élőben frissül a bányászatok és jutalmak során (0.02 token / bányászat)
-)
+total_mined_tokens = 0.0
 
 # Felhasználói adatok tárolása
 user_data = {}
