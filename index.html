@@ -60,9 +60,9 @@
         .balance-box { background: var(--card-bg); padding: 12px; border-radius: 12px; margin: 10px 0; border: 1px solid #333; }
         .balance-val { font-size: 22px; font-weight: bold; color: var(--gold); }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-card { background: var(--card-bg); padding: 8px; border-radius: 8px; border: 1px solid #333; font-size: 10px; color: var(--text-grey); }
-        .stat-val { color: var(--gold); font-weight: bold; display: block; font-size: 12px; margin-top: 2px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+        .stat-card { background: var(--card-bg); padding: 8px 4px; border-radius: 8px; border: 1px solid #333; font-size: 9px; color: var(--text-grey); }
+        .stat-val { color: var(--gold); font-weight: bold; display: block; font-size: 11px; margin-top: 2px; }
 
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .btn { padding: 10px 5px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s; }
@@ -97,7 +97,8 @@
 
         <div class="stats-grid">
             <div class="stat-card">Státusz<span class="stat-val" id="statusText">🔴 Inaktív</span></div>
-            <div class="stat-card">Videók<span class="stat-val" id="dailyProd">0/5</span></div>
+            <div class="stat-card">Auto-Claim<span class="stat-val" id="dailyProd">0/5</span></div>
+            <div class="stat-card">Verseny<span class="stat-val" id="extraCountText">0 db</span></div>
         </div>
 
         <div class="btn-grid">
@@ -130,21 +131,23 @@
 
         let balance = parseFloat(localStorage.getItem('userBalance')) || 0;
         let watchedAutoClaimVideos = parseInt(localStorage.getItem('watchedAutoClaimVideos')) || 0;
+        let extraVideosCount = parseInt(localStorage.getItem('extraVideosCount')) || 0;
         
         const balanceDisplay = document.getElementById('balance');
         const statusText = document.getElementById('statusText');
         const dailyProd = document.getElementById('dailyProd');
+        const extraCountText = document.getElementById('extraCountText');
 
         function updateUI() {
             balanceDisplay.innerText = balance.toLocaleString() + " TITUS";
-            dailyProd.innerText = watchedAutoClaimVideos + "/5 Videó";
+            dailyProd.innerText = watchedAutoClaimVideos + "/5";
+            extraCountText.innerText = extraVideosCount + " db";
             const expiry = localStorage.getItem('autoClaimExpiry');
             statusText.innerText = (expiry && Date.now() < expiry) ? "🟢 Aktív" : "🔴 Inaktív";
             statusText.style.color = (expiry && Date.now() < expiry) ? "#4ade80" : "#f87171";
         }
         updateUI();
 
-        // IDE ÍRD BE AZ ÚJ ADSGRAM BLOCK ID-DET (A HANGOSÍTÓ ID-T):
         const adsgramBlockId = "43125"; 
         
         function playAd(callback) {
@@ -181,10 +184,10 @@
 
         document.getElementById('extraBtn').addEventListener('click', () => {
             playAd(() => {
-                balance += 10;
-                localStorage.setItem('userBalance', balance);
+                extraVideosCount++;
+                localStorage.setItem('extraVideosCount', extraVideosCount);
                 updateUI();
-                alert("Sikeres extra videó! +10 TITUS.");
+                alert("Köszönjük! A hirdetés bevétele a likviditási alapba került.\nEddigi extra videóid a versenyhez: " + extraVideosCount + " db");
             });
         });
 
