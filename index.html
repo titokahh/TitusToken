@@ -75,6 +75,8 @@
             <button class="btn btn-blue" id="claimBtn">💰 KIFIZETÉS</button>
             <button class="btn btn-grey" id="extraBtn">🎬 EXTRA VIDEÓ</button>
             <button class="btn-gold btn" id="referBtn">🤝 BARÁT MEGHÍVÁSA</button>
+            <button class="btn btn-grey" id="infoBtn">ℹ️ INFÓ</button>
+            <button class="btn btn-grey" id="statusBtn">📊 STÁTUSZ</button>
             <button class="btn btn-grey" id="settingsBtn">⚙️ BEÁLLÍTÁSOK</button>
         </div>
 
@@ -83,6 +85,7 @@
         </div>
     </div>
 
+    <!-- Jogi és Információs Modal -->
     <div id="legalModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100; justify-content:center; align-items:center;">
         <div style="background:#1a1a1a; padding:20px; width:80%; border-radius:10px; text-align:left; border: 1px solid #333;">
             <h2 id="mTitle" style="color:var(--gold); margin-top:0;"></h2>
@@ -124,15 +127,27 @@
         }
 
         document.getElementById('referBtn').addEventListener('click', () => {
-            // Meghívás számláló növelése
             referralCount++;
             localStorage.setItem('referralCount', referralCount);
             updateUI();
-            
             const referLink = `https://t.me/${botUsername}?start=${userId}`;
             navigator.clipboard.writeText(referLink).then(() => {
                 alert("Meghívó link másolva! Eddigi meghívásaid: " + referralCount + ". Küldd el barátaidnak!");
             });
+        });
+
+        // Új gombok logikája
+        document.getElementById('infoBtn').addEventListener('click', () => {
+            document.getElementById('mTitle').innerText = "Titus Token Infó";
+            document.getElementById('mText').innerHTML = "A Titus Token a közösségi bányászat projektje. Gyűjtsd a videókkal a likviditási alapot és hívd meg barátaidat!<br><br><b>Nyeremények a versenyben:</b><br>1. hely: 1000 TITUS<br>2. hely: 500 TITUS<br>3. hely: 250 TITUS";
+            document.getElementById('legalModal').style.display = "flex";
+        });
+
+        document.getElementById('statusBtn').addEventListener('click', () => {
+            document.getElementById('mTitle').innerText = "Rendszer Státusz";
+            const adsActive = window.Adsgram ? "🟢 Aktív" : "🟡 Betöltés alatt";
+            document.getElementById('mText').innerHTML = `Hirdetési rendszer: ${adsActive}<br>Block ID: ${adsgramBlockId}<br>App állapot: Futásban`;
+            document.getElementById('legalModal').style.display = "flex";
         });
 
         document.getElementById('startBtn').addEventListener('click', function startAdChain() {
@@ -171,7 +186,7 @@
         document.getElementById('termsBtn').addEventListener('click', (e) => { 
             e.preventDefault();
             document.getElementById('mTitle').innerText = "Terms of Service";
-            document.getElementById('mText').innerHTML = "Virtual assets for ranking purposes only.\n\nContest Rewards: 1st: 1000, 2nd: 500, 3rd: 250 TITUS.";
+            document.getElementById('mText').innerHTML = "Virtual assets for ranking purposes only.";
             document.getElementById('legalModal').style.display = "flex";
         });
     </script>
