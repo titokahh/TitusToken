@@ -2,7 +2,7 @@ import os
 import telebot
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-TOKEN = "8797502641:AAHreTwgj6kOE0HmPKfAh0ctd40vQg7Nkc"
+TOKEN = "8797502641:AAFLNc-S9Lmeo3jGvnN0Up-Ff7FdJZdd7DE"
 bot = telebot.TeleBot(TOKEN)
 
 # Rendszer adatok
@@ -89,7 +89,7 @@ def handle_callback(call):
     markup.row(InlineKeyboardButton("⬅️ Vissza", callback_data="main_menu"))
     bot.edit_message_text(
         chat_id=chat_id,
-        message_id=call.message.message.id,
+        message_id=call.message.message_id,
         text=get_info_text(),
         parse_mode="Markdown",
         reply_markup=markup,
@@ -102,7 +102,8 @@ def handle_callback(call):
     status_text = (
         "✅ **Aktív (24 órás auto-claim)**"
         if u_info["auto_claim"]
-        else f"⏳ Még {5 - ads_count} VALÓDI reklám szükséges a 24 órás auto-claimhez."
+        else f"⏳ Még {5 - ads_count} VALÓDI reklám szükséges a 24 órás"
+        " auto-claimhez."
     )
 
     text = (
@@ -137,7 +138,7 @@ def handle_callback(call):
     markup.row(InlineKeyboardButton("⬅️ Vissza", callback_data="main_menu"))
     bot.edit_message_text(
         chat_id=chat_id,
-        message_id=call.message.message.id,
+        message_id=call.message.message_id,
         text=text,
         parse_mode="Markdown",
         reply_markup=markup,
@@ -161,7 +162,8 @@ def handle_callback(call):
     status_text = (
         "✅ **Aktív (24 órás auto-claim)**"
         if u_info["auto_claim"]
-        else f"⏳ Még {5 - ads_count} VALÓDI reklám szükséges a 24 órás auto-claimhez."
+        else f"⏳ Még {5 - ads_count} VALÓDI reklám szükséges a 24 órás"
+        " auto-claimhez."
     )
 
     text = (
@@ -194,7 +196,7 @@ def handle_callback(call):
     markup.row(InlineKeyboardButton("⬅️ Vissza", callback_data="main_menu"))
     bot.edit_message_text(
         chat_id=chat_id,
-        message_id=call.message.message.id,
+        message_id=call.message.message_id,
         text=text,
         parse_mode="Markdown",
         reply_markup=markup,
@@ -211,7 +213,7 @@ def handle_callback(call):
     )
     bot.edit_message_text(
         chat_id=chat_id,
-        message_id=call.message.message.id,
+        message_id=call.message.message_id,
         text=f"Szia Tito! Üdvözöllek a TitusToken botban. Válassz az alábbi"
         " lehetőségek közül:",
         reply_markup=markup,
