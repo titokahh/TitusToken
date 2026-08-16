@@ -4,191 +4,146 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Titus Token Bányászat</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- AdsGram SDK -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 16px;
+            padding: 0;
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
         .container {
             width: 100%;
             max-width: 400px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-        }
-        .header {
+            padding: 20px;
+            box-sizing: border-box;
             text-align: center;
-            font-size: 13px;
-            letter-spacing: 2px;
-            color: #d4af37;
-            font-weight: bold;
         }
-        .coin-container {
-            position: relative;
+        h1 {
+            font-size: 20px;
+            color: #fbbf24;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+        .coin-box {
             width: 150px;
             height: 150px;
+            background: linear-gradient(135deg, #fbbf24, #d97706);
             border-radius: 50%;
-            background: radial-gradient(circle, #ffd700 0%, #b8860b 70%, #3e2723 100%);
+            margin: 0 auto 20px auto;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
-            border: 3px solid #fff;
-            text-align: center;
-            padding: 10px;
+            box-shadow: 0 10px 25px rgba(251, 191, 36, 0.3);
         }
-        .coin-title {
-            font-size: 20px;
-            font-weight: 900;
-            color: #1a1a1a;
-            letter-spacing: 1px;
-            margin-top: 2px;
-        }
-        .coin-subtitle {
-            font-size: 11px;
+        .coin-text {
             font-weight: bold;
-            color: #222;
+            font-size: 18px;
+            color: #1e1b4b;
         }
         .balance-card {
-            background: #1e1e1e;
-            border: 1px solid #333;
+            background: #1e293b;
             border-radius: 12px;
-            padding: 14px;
-            width: 100%;
-            text-align: center;
-            box-sizing: border-box;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #334155;
         }
-        .balance-title {
-            font-size: 11px;
-            color: #aaa;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
-        }
-        .balance-amount {
-            font-size: 20px;
+        .balance-value {
+            font-size: 24px;
             font-weight: bold;
-            color: #ffd700;
+            color: #fbbf24;
         }
-        .balance-usd {
-            font-size: 13px;
-            color: #888;
-            margin-top: 2px;
-        }
-        .stats-row {
-            display: flex;
-            gap: 10px;
+        .action-btn {
             width: 100%;
-        }
-        .stat-box {
-            flex: 1;
-            background: #1e1e1e;
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 10px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .stat-icon {
-            font-size: 18px;
-        }
-        .stat-text div:first-child {
-            color: #888;
-            font-size: 9px;
-        }
-        .stat-text div:last-child {
-            font-weight: bold;
-            color: #fff;
-            font-size: 12px;
-        }
-        .buttons-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            width: 100%;
-        }
-        .btn {
             padding: 12px;
-            border-radius: 10px;
+            margin: 8px 0;
             border: none;
-            color: #fff;
+            border-radius: 8px;
             font-weight: bold;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
+            font-size: 15px;
             cursor: pointer;
+            transition: 0.2s;
         }
-        .btn-green { background-color: #1b5e20; border: 1px solid #2e7d32; }
-        .btn-red { background-color: #b71c1c; border: 1px solid #c62828; }
-        .btn-blue { background-color: #0d47a1; border: 1px solid #1565c0; }
-        .btn-dark { background-color: #212121; border: 1px solid #424242; }
+        .btn-green { background: #10b981; color: white; }
+        .btn-red { background: #ef4444; color: white; }
+        .btn-blue { background: #3b82f6; color: white; }
+        .btn-orange { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+        .action-btn:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <div class="header">TITUS TOKEN<br>BÁNYÁSZAT</div>
+        <h1>TITUS TOKEN BÁNYÁSZAT</h1>
         
-        <div class="coin-container">
-            <div style="font-size: 16px;">👑</div>
-            <div class="coin-title">TITUS</div>
-            <div class="coin-subtitle">TOKEN</div>
-            <div style="font-size: 7px; margin-top: 4px; color: #222;">PREMIUM DIGITAL ASSET</div>
+        <div class="coin-box">
+            <div style="font-size: 24px;">👑</div>
+            <div class="coin-text">TITUS</div>
+            <div style="font-size: 10px; color: #1e1b4b;">PREMIUM DIGITAL ASSET</div>
         </div>
 
         <div class="balance-card">
-            <div class="balance-title">AKTUÁLIS EGYENLEG:</div>
-            <div class="balance-amount">0 TITUS</div>
-            <div class="balance-usd">≈ $0.00 USD</div>
+            <div style="font-size: 12px; color: #94a3b8;">AKTUÁLIS EGYENLEG:</div>
+            <div class="balance-value" id="balance">0 TITUS</div>
         </div>
 
-        <div class="stats-row">
-            <div class="stat-box">
-                <span class="stat-icon">⚡</span>
-                <div class="stat-text">
-                    <div>Bányászati Sebesség:</div>
-                    <div>0 MH/s</div>
-                </div>
-            </div>
-            <div class="stat-box">
-                <span class="stat-icon">📊</span>
-                <div class="stat-text">
-                    <div>Mai Termelés:</div>
-                    <div>0 TITUS</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="buttons-grid">
-            <button class="btn btn-green" onclick="alert('Bányászat elindítva!')">
-                ⛏️ Bányászat Indítása
-            </button>
-            <button class="btn btn-red" onclick="alert('Bányászat leállítva!')">
-                ⏹️ Bányászat Leállítása
-            </button>
-            <button class="btn btn-blue" onclick="alert('Kifizetés igénylése elküldve!')">
-                💰 Kifizetés Igénylése
-            </button>
-            <button class="btn btn-dark" onclick="alert('Beállítások megnyitva')">
-                ⚙️ Beállítások
-            </button>
-        </div>
+        <!-- Alapműveleti gombok -->
+        <button class="action-btn btn-green" id="startMining">⛏️ Bányászat Indítása</button>
+        <button class="action-btn btn-red" id="stopMining">⏹️ Bányászat Leállítása</button>
+        
+        <!-- Verseny / Extra Videó Gomb AdsGram integrációval -->
+        <button class="action-btn btn-orange" id="extraVideoBtn">🎬 Plusz Videó (Verseny)</button>
+        
+        <button class="action-btn btn-blue" id="claimBtn">💰 Kifizetés Igénylése</button>
     </div>
 
     <script>
-        let tg = window.Telegram.WebApp;
-        tg.expand();
+        // Alap egyenleg kezelés
+        let userBalance = 0;
+        const balanceDisplay = document.getElementById('balance');
+
+        document.getElementById('startMining').addEventListener('click', () => {
+            alert("Bányászat elindítva, Tito!");
+        });
+
+        document.getElementById('stopMining').addEventListener('click', () => {
+            alert("Bányászat leállítva.");
+        });
+
+        document.getElementById('claimBtn').addEventListener('click', () => {
+            alert("Kifizetés igénylése elküldve!");
+        });
+
+        // AdsGram Extra Videó / Verseny Logika
+        document.getElementById('extraVideoBtn').addEventListener('click', () => {
+            // Itt adhatod meg az AdsGram Block ID-dat, amit a vezérlőpultban kaptál
+            const blockId = "itt_a_te_block_id_d"; 
+
+            if (window.Adsgram) {
+                const adController = window.Adsgram.init({ blockId: blockId });
+                
+                adController.show().then(() => {
+                    // Sikeres megtekintés
+                    userBalance += 10; // Például 10 token jár érte
+                    balanceDisplay.innerText = userBalance + " TITUS";
+                    alert("Sikeres videó megtekintés! Pontod rögzítve a versenyben.");
+                }).catch((result) => {
+                    // Megszakított hirdetés
+                    console.log("Hirdetés megszakítva:", result);
+                    alert("A hirdetés nem lett végignézve.");
+                });
+            } else {
+                alert("Az AdsGram hirdetési rendszer még töltődik.");
+            }
+        });
     </script>
 </body>
 </html>
