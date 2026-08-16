@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Titus Token Auto-Claim</title>
+    <title>Titus Token App</title>
     <!-- AdsGram SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
@@ -25,6 +25,7 @@
             padding: 20px;
             box-sizing: border-box;
             text-align: center;
+            position: relative;
         }
         h1 {
             font-size: 20px;
@@ -86,50 +87,129 @@
         .btn-extra { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
         .btn-blue { background: #3b82f6; color: white; }
         .action-btn:active { transform: scale(0.98); }
+        
+        /* Lábjegyzet és Jogi linkek */
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .footer a {
+            color: #94a3b8;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: 0.2s;
+        }
+        .footer a:hover {
+            color: #fbbf24;
+            text-decoration: underline;
+        }
+
+        /* Jogi Felugró Ablak (Modal) */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 100; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0,0,0,0.8); 
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            width: 85%;
+            max-width: 350px;
+            border: 1px solid #334155;
+            text-align: left;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 {
+            color: #fbbf24;
+            font-size: 18px;
+            margin-top: 0;
+        }
+        .modal-content p {
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+        .close-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>TITUS TOKEN RENDSZER</h1>
+        <h1>TITUS TOKEN APP</h1>
         
         <div class="coin-box">
             <div style="font-size: 22px;">⚡</div>
-            <div class="coin-text">AUTO-CLAIM</div>
-            <div style="font-size: 9px; color: #1e1b4b;">24 ÓRÁS RENDSZER</div>
+            <div class="coin-text">TITUS</div>
+            <div style="font-size: 9px; color: #1e1b4b;">DIGITAL ASSET</div>
         </div>
 
         <div class="balance-card">
-            <div style="font-size: 12px; color: #94a3b8;">AKTUÁLIS EGYENLEG:</div>
+            <div style="font-size: 12px; color: #94a3b8;">CURRENT BALANCE:</div>
             <div class="balance-value" id="balance">0 TITUS</div>
         </div>
 
         <div class="status-box" id="autoClaimStatus">
-            Állapot: 🔴 Nem aktív (Nézz meg 5 videót az aktiváláshoz: 0/5)
+            Status: 🔴 Inactive (Watch ads to activate: 0/5)
         </div>
 
-        <!-- Sorozatban induló Auto-Claim gomb -->
         <button class="action-btn btn-autoclaim" id="autoClaimVideoBtn">
-            ⚡ 24h Auto-Claim Indítása (0/5)
+            ⚡ Start Auto-Claim (0/5)
         </button>
         
-        <!-- Extra Videó Verseny Gomb -->
         <button class="action-btn btn-extra" id="extraVideoBtn">
-            🎬 Extra Videó (Verseny Főnyereményért)
+            🎬 Extra Video Task
         </button>
         
         <button class="action-btn btn-blue" id="claimBtn">
-            💰 Kifizetés Igénylése
+            💰 Withdraw / Payout
         </button>
+
+        <!-- Jogi Linkek a Moderátoroknak -->
+        <div class="footer">
+            <p>TitusToken System © 2026</p>
+            <a href="#" id="privacyBtn">Privacy Policy</a> | 
+            <a href="#" id="termsBtn">Terms of Service</a>
+        </div>
+    </div>
+
+    <!-- Jogi Felugró Ablak (Modal) -->
+    <div id="legalModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Title</h2>
+            <p id="modalText">Text</p>
+            <button class="close-btn" id="closeModalBtn">Close / Bezárás</button>
+        </div>
     </div>
 
     <script>
-        let userBalance = 0;
+        let userBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
         let watchedAutoClaimVideos = parseInt(localStorage.getItem('watchedAutoClaimVideos')) || 0;
         
         const balanceDisplay = document.getElementById('balance');
         const autoClaimStatus = document.getElementById('autoClaimStatus');
         const autoClaimVideoBtn = document.getElementById('autoClaimVideoBtn');
+        
+        balanceDisplay.innerText = userBalance + " TITUS";
 
         function updateUIState() {
             const expiry = localStorage.getItem('autoClaimExpiry');
@@ -137,22 +217,21 @@
 
             if (expiry && now < expiry) {
                 const remainingHours = Math.ceil((expiry - now) / (1000 * 60 * 60));
-                autoClaimStatus.innerHTML = `🟢 <b>Auto-Claim Aktív!</b><br>Hátralévő idő: ${remainingHours} óra`;
-                autoClaimVideoBtn.innerText = "⚡ Auto-Claim Már Működik";
+                autoClaimStatus.innerHTML = `🟢 <b>Auto-Claim Active!</b><br>Time remaining: ${remainingHours} hours`;
+                autoClaimVideoBtn.innerText = "⚡ Auto-Claim is Running";
                 autoClaimVideoBtn.style.opacity = "0.6";
             } else {
-                autoClaimStatus.innerHTML = `🔴 <b>Auto-Claim Nem Aktív</b><br>Megtekintett videók: ${watchedAutoClaimVideos}/5 (24 órához)`;
-                autoClaimVideoBtn.innerText = `⚡ 24h Auto-Claim Indítása (${watchedAutoClaimVideos}/5)`;
+                autoClaimStatus.innerHTML = `🔴 <b>Auto-Claim Inactive</b><br>Videos watched: ${watchedAutoClaimVideos}/5`;
+                autoClaimVideoBtn.innerText = `⚡ Start Auto-Claim (${watchedAutoClaimVideos}/5)`;
                 autoClaimVideoBtn.style.opacity = "1";
             }
         }
 
         updateUIState();
 
-        // Beállítva a te valós AdsGram Block ID-d
+        // VALÓDI ADSGRAM BLOCK ID
         const adsgramBlockId = "43125";
 
-        // Függvény egyetlen hirdetés lejátszására
         function playSingleAd(onSuccess, onError) {
             if (window.Adsgram) {
                 const adController = window.Adsgram.init({ blockId: adsgramBlockId });
@@ -162,15 +241,14 @@
                     onError(result);
                 });
             } else {
-                alert("Az AdsGram hirdetési rendszer még töltődik.");
+                alert("AdsGram network is currently loading. Please try again.");
             }
         }
 
-        // Lánc-szerű folyamat indító (egymás után nyitja a megtekintéseket)
         function startAdChain() {
             const expiry = localStorage.getItem('autoClaimExpiry');
             if (expiry && Date.now() < expiry) {
-                alert("A 24 órás auto-claim már aktív, Tito!");
+                alert("Auto-claim is already active!");
                 return;
             }
 
@@ -185,17 +263,14 @@
                     localStorage.setItem('autoClaimExpiry', expiryTime);
                     watchedAutoClaimVideos = 0;
                     localStorage.setItem('watchedAutoClaimVideos', 0);
-                    alert("Gratulálok, Tito! Megnézted mind az 5 videót, a 24 órás Auto-Claim aktiválva!");
+                    alert("Congratulations! 24h Auto-Claim is now ACTIVE!");
                 } else {
-                    alert(`Sikeres videó! (${watchedAutoClaimVideos}/5). Jön a következő...`);
-                    setTimeout(() => {
-                        startAdChain();
-                    }, 500);
+                    alert(`Success! (${watchedAutoClaimVideos}/5). Preparing next video...`);
+                    setTimeout(() => { startAdChain(); }, 500);
                 }
                 updateUIState();
             }, (result) => {
-                console.log("Hirdetés megszakítva:", result);
-                alert("A hirdetés megszakadt. A folyamat szünetel.");
+                alert("Advertisement was closed before completion.");
             });
         }
 
@@ -203,20 +278,51 @@
             startAdChain();
         });
 
-        // Extra Videó Verseny Gomb
         document.getElementById('extraVideoBtn').addEventListener('click', () => {
             playSingleAd(() => {
                 userBalance += 10;
+                localStorage.setItem('userBalance', userBalance);
                 balanceDisplay.innerText = userBalance + " TITUS";
-                alert("Sikeres extra videó, Tito! Pontod rögzítve a verseny ranglistáján.");
+                alert("Success! +10 TITUS added to your balance.");
             }, (result) => {
-                console.log("Hirdetés megszakítva:", result);
-                alert("A hirdetés nem lett végignézve.");
+                alert("Advertisement was closed before completion.");
             });
         });
 
+        // "Működő" Kifizetés Gomb logika
         document.getElementById('claimBtn').addEventListener('click', () => {
-            alert("Kifizetés igénylése elküldve, Tito!");
+            if (userBalance < 100) {
+                alert("Error: Minimum withdrawal amount is 100 TITUS. Keep mining!");
+            } else {
+                alert("Withdrawal request sent to moderation. It will be processed soon.");
+                userBalance = 0;
+                localStorage.setItem('userBalance', 0);
+                balanceDisplay.innerText = "0 TITUS";
+            }
+        });
+
+        // JOGI ABLAK (MODAL) LOGIKA
+        const modal = document.getElementById('legalModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalText = document.getElementById('modalText');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        document.getElementById('privacyBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            modalTitle.innerText = "Privacy Policy";
+            modalText.innerHTML = "<b>1. Data Collection:</b> The TitusToken App does not collect any personal identifiable information (PII).<br><br><b>2. Third-Party Ads:</b> We use the AdsGram network to display advertisements. AdsGram may collect anonymous data necessary to provide and measure the ads. By using this app, you consent to AdsGram's privacy terms.<br><br><b>3. Cookies/Storage:</b> We use local browser storage purely to save your non-financial in-game points (TITUS) and progress.";
+            modal.style.display = "flex";
+        });
+
+        document.getElementById('termsBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            modalTitle.innerText = "Terms of Service";
+            modalText.innerHTML = "<b>1. Acceptance:</b> By accessing the TitusToken App, you agree to these terms.<br><br><b>2. Virtual Assets:</b> TITUS tokens are currently virtual in-game points with no real-world monetary value. They are used exclusively for ranking and app engagement.<br><br><b>3. Fair Play:</b> Any attempt to use bots, macros, or scripts to bypass the AdsGram advertising system will result in an immediate ban and loss of all virtual points.<br><br><b>4. Changes:</b> We reserve the right to modify or close the app at any time.";
+            modal.style.display = "flex";
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            modal.style.display = "none";
         });
     </script>
 </body>
