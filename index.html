@@ -85,12 +85,12 @@
         </div>
     </div>
 
-    <!-- Modal Ablak -->
+    <!-- Modal Ablak (Jogi / Státusz) -->
     <div id="legalModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100; justify-content:center; align-items:center;">
         <div style="background:#1a1a1a; padding:20px; width:85%; border-radius:10px; text-align:left; border: 1px solid #333; max-height: 80vh; overflow-y: auto;">
             <h2 id="mTitle" style="color:var(--gold); margin-top:0;"></h2>
             <div id="mText" style="font-size:12px; color:#ccc; line-height: 1.5;"></div>
-            <button onclick="document.getElementById('legalModal').style.display='none'" style="width:100%; padding:10px; background:var(--gold); border:none; border-radius:5px; margin-top:15px; font-weight:bold;">Bezárás</button>
+            <button onclick="document.getElementById('legalModal').style.display='none'" style="width:100%; padding:10px; background:var(--gold); border:none; border-radius:5px; margin-top:15px; font-weight:bold; cursor:pointer;">Bezárás</button>
         </div>
     </div>
 
@@ -163,39 +163,6 @@
             });
         });
 
-        document.getElementById('infoStatusBtn').addEventListener('click', async () => {
-            await fetchUserCount();
-
-            document.getElementById('mTitle').innerText = "📊 Rendszer Státusz & Infó";
-            const adsActive = window.Adsgram ? "🟢 Aktív" : "🟡 Betöltés alatt";
-            document.getElementById('mText').innerHTML = `
-                <b>👥 Felhasználók:</b> ${totalUsersCount} / 2,000<br>
-                <b>📌 Jelenlegi státusz:</b> 🗡️ Teszt fázis<br><br>
-                <b>💎 ÉLŐ Token Keret & Készlet:</b><br>
-                • Teljes: 5,000,000 token<br>
-                • Tito részesedése: 2,000,000 token<br>
-                • Kiosztott: 0.00 token<br>
-                • Élő bányászható: 3,000,000.00 token<br><br>
-                <b>⚙️ Főbb Paraméterek:</b><br>
-                • Utángyártás: Nincs<br>
-                • Bányászati ciklus: 6 óránként (0.02 token)<br>
-                • Auto-claim: 5 valódi videó = 24h<br>
-                • Ajánlás: 0.5 token/fő<br><br>
-                <b>💰 Bevétel elosztás:</b><br>
-                • 60% -> Likviditás<br>
-                • 20% -> Égetés (Burn)<br>
-                • 20% -> Fejlesztés<br><br>
-                <b>🏆 VERSENY NYEREMÉNYEK:</b><br>
-                1. hely: 1000 TITUS<br>
-                2. hely: 500 TITUS<br>
-                3. hely: 250 TITUS<br><br>
-                <hr style="border:0; border-top:1px solid #333;">
-                <b>Rendszer:</b> ${adsActive}<br>
-                <b>Block ID:</b> ${adsgramBlockId}
-            `;
-            document.getElementById('legalModal').style.display = "flex";
-        });
-
         document.getElementById('startBtn').addEventListener('click', function startAdChain() {
             const expiry = localStorage.getItem('autoClaimExpiry');
             if (expiry && Date.now() < expiry) { alert("Már aktív!"); return; }
@@ -236,7 +203,7 @@
             document.getElementById('legalModal').style.display = "flex";
         });
 
-        // Nyelvi szótár és fordítási logika
+        // Nyelvi szótár (magyar és angol mindent lefedve)
         const translations = {
             hu: {
                 title: "TITUS TOKEN BÁNYÁSZAT",
@@ -250,7 +217,27 @@
                 settingsBtn: "⚙️ BEÁLLÍTÁSOK",
                 settingsTitle: "Beállítások",
                 settingsLangLabel: "Válassz nyelvet / Choose language:",
-                closeBtn: "Bezárás"
+                closeBtn: "Bezárás",
+                statusTitle: "📊 Rendszer Státusz & Infó",
+                statusUsers: "Felhasználók",
+                statusState: "Jelenlegi státusz",
+                statusPhase: "Teszt fázis",
+                statusPoolTitle: "ÉLŐ Token Keret & Készlet",
+                statusTotal: "Teljes",
+                statusShare: "Tito részesedése",
+                statusDistributed: "Kiosztott",
+                statusMineable: "Élő bányászható",
+                statusParams: "Főbb Paraméterek",
+                statusRefill: "Utángyártás",
+                statusNone: "Nincs",
+                statusCycle: "Bányászati ciklus",
+                statusCycleVal: "6 óránként (0.02 token)",
+                statusAutoClaim: "Auto-claim",
+                statusAutoVal: "5 valódi videó = 24h",
+                statusRef: "Ajánlás",
+                statusRefVal: "0.5 token/fő",
+                statusRevenue: "Bevétel elosztás",
+                statusCompetition: "VERSENY NYEREMÉNYEK"
             },
             en: {
                 title: "TITUS TOKEN MINING",
@@ -264,7 +251,27 @@
                 settingsBtn: "⚙️ SETTINGS",
                 settingsTitle: "Settings",
                 settingsLangLabel: "Choose language / Válassz nyelvet:",
-                closeBtn: "Close"
+                closeBtn: "Close",
+                statusTitle: "📊 System Status & Info",
+                statusUsers: "Users",
+                statusState: "Current status",
+                statusPhase: "Test phase",
+                statusPoolTitle: "LIVE Token Pool & Supply",
+                statusTotal: "Total",
+                statusShare: "Tito's share",
+                statusDistributed: "Distributed",
+                statusMineable: "Live mineable",
+                statusParams: "Main Parameters",
+                statusRefill: "Refill",
+                statusNone: "None",
+                statusCycle: "Mining cycle",
+                statusCycleVal: "Every 6h (0.02 token)",
+                statusAutoClaim: "Auto-claim",
+                statusAutoVal: "5 real ads = 24h",
+                statusRef: "Referral",
+                statusRefVal: "0.5 token/user",
+                statusRevenue: "Revenue Distribution",
+                statusCompetition: "COMPETITION REWARDS"
             }
         };
 
@@ -291,6 +298,43 @@
             document.getElementById('settingsLangLabel').innerText = t.settingsLangLabel;
             document.getElementById('settingsCloseBtn').innerText = t.closeBtn;
         }
+
+        // Státusz ablak megnyitása dinamikus nyelvkezeléssel
+        document.getElementById('infoStatusBtn').addEventListener('click', async () => {
+            await fetchUserCount();
+            const currentLang = localStorage.getItem('titus_lang') || 'hu';
+            const t = translations[currentLang];
+
+            document.getElementById('mTitle').innerText = t.statusTitle;
+            const adsActive = window.Adsgram ? "🟢 Aktív" : "🟡 Betöltés alatt";
+            
+            document.getElementById('mText').innerHTML = `
+                <b>👥 ${t.statusUsers}:</b> ${totalUsersCount} / 2,000<br>
+                <b>📌 ${t.statusState}:</b> 🗡️ ${t.statusPhase}<br><br>
+                <b>💎 ${t.statusPoolTitle}:</b><br>
+                • ${t.statusTotal}: 5,000,000 token<br>
+                • ${t.statusShare}: 2,000,000 token<br>
+                • ${t.statusDistributed}: 0.00 token<br>
+                • ${t.statusMineable}: 3,000,000.00 token<br><br>
+                <b>⚙️ ${t.statusParams}:</b><br>
+                • ${t.statusRefill}: ${t.statusNone}<br>
+                • ${t.statusCycle}: ${t.statusCycleVal}<br>
+                • ${t.statusAutoClaim}: ${t.statusAutoVal}<br>
+                • ${t.statusRef}: ${t.statusRefVal}<br><br>
+                <b>💰 ${t.statusRevenue}:</b><br>
+                • 60% -> Likviditás / Liquidity<br>
+                • 20% -> Égetés / Burn<br>
+                • 20% -> Fejlesztés / Development<br><br>
+                <b>🏆 ${t.statusCompetition}:</b><br>
+                1. place: 1000 TITUS<br>
+                2. place: 500 TITUS<br>
+                3. place: 250 TITUS<br><br>
+                <hr style="border:0; border-top:1px solid #333;">
+                <b>Rendszer / System:</b> ${adsActive}<br>
+                <b>Block ID:</b> ${adsgramBlockId}
+            `;
+            document.getElementById('legalModal').style.display = "flex";
+        });
 
         document.getElementById('settingsBtn').addEventListener('click', () => {
             document.getElementById('settingsModal').style.display = 'flex';
