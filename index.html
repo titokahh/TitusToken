@@ -148,8 +148,11 @@
         
         function playAd(callback) {
             if (window.Adsgram) {
-                const controller = window.Adsgram.init({ blockId: adsgramBlockId });
-                controller.show().then(callback).catch(() => alert("Hirdetés megszakítva!"));
+                const controller = window.Adsgram.init({ blockId: adsgramBlockId, mode: "test" });
+                controller.show().then(callback).catch((err) => {
+                    console.error("Adsgram error:", err);
+                    alert("Hirdetés hiba: " + (err.message || JSON.stringify(err)));
+                });
             } else { alert("Ad network loading..."); }
         }
 
